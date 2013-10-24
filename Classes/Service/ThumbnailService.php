@@ -179,7 +179,7 @@ class ThumbnailService implements \TYPO3\CMS\Media\Service\ThumbnailInterface {
 	 * @return string
 	 */
 	public function getIcon($extension) {
-		$resource = \TYPO3\CMS\Media\Utility\Path::getRelativePath(sprintf('Icons/MimeType/%s.png', $extension));
+		$resource = \TYPO3\CMS\Media\Utility\Path::getRelativePath(sprintf('Icons/MissingMimeTypeIcon.png', $extension));
 
 		// If file is not found, fall back to a default icon
 		if (\TYPO3\CMS\Media\Utility\Path::notExists($resource)) {
