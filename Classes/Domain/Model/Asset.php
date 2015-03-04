@@ -218,6 +218,12 @@ class Asset extends \TYPO3\CMS\Core\Resource\File {
 	 */
 	protected $objectManager;
 
+    /** @var $categoryRepository \TYPO3\CMS\Media\Domain\Repository\CategoryRepository */
+    protected $categoryRepository;
+
+    /** @var $thumbnailService \TYPO3\CMS\Media\Service\ThumbnailService */
+    protected $thumbnailService;
+
 	/**
 	 * Constructor for a Media object.
 	 *
@@ -230,6 +236,8 @@ class Asset extends \TYPO3\CMS\Core\Resource\File {
 
 		// Not in Extbase context...
 		$this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Extbase\Object\ObjectManager');
+        $this->categoryRepository = $this->objectManager->get('TYPO3\CMS\Media\Domain\Repository\CategoryRepository');
+        $this->thumbnailService = $this->objectManager->get('TYPO3\CMS\Media\Service\ThumbnailService');
 	}
 
 	/**
@@ -822,13 +830,12 @@ class Asset extends \TYPO3\CMS\Core\Resource\File {
 	 * @return string
 	 */
 	public function getThumbnail(\TYPO3\CMS\Media\Service\ThumbnailService $thumbnailService = NULL) {
-
-		if (is_null($thumbnailService)) {
+		if (is_null($this->thumbnailService)) {
 			/** @var $thumbnailService \TYPO3\CMS\Media\Service\ThumbnailService */
 			$thumbnailService = $this->objectManager->get('TYPO3\CMS\Media\Service\ThumbnailService');
 		}
 
-		return $thumbnailService->setFile($this)
+		return $this->thumbnailService->setFile($this)
 			->create();
 	}
 
@@ -855,9 +862,7 @@ class Asset extends \TYPO3\CMS\Core\Resource\File {
 	 */
 	public function getCategories() {
 		if (is_null($this->categories)) {
-			/** @var $categoryRepository \TYPO3\CMS\Media\Domain\Repository\CategoryRepository */
-			$categoryRepository = $this->objectManager->get('TYPO3\CMS\Media\Domain\Repository\CategoryRepository');
-			$this->categories = $categoryRepository->findRelated($this);
+			$this->categories = $this->categoryRepository->findRelated($this);
 		};
 		return $this->categories;
 	}
