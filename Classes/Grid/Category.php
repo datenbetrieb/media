@@ -43,7 +43,18 @@ class Category implements \TYPO3\CMS\Media\Grid\GridRendererInterface {
 		$result = '';
 		// We are force to convert to array to be sure of the result.
 		// Method "isValid" from QueryResult can not be used here.
-		$categories = $asset->getCategories()->toArray();
+		try {
+$categories = $asset->getCategories();
+if(!is_object($categories)) {
+//var_dump($asset->getCategories());
+//die('no categories assigned?');
+return '';
+
+}
+			$categories = $asset->getCategories()->toArray();
+		} catch (\Exception $ex) {
+return '';
+}
 		if (!empty($categories)) {
 			$template = '<li style="list-style: disc">%s</li>';
 			/** @var $category \TYPO3\CMS\Extbase\Domain\Model\Category */
